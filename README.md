@@ -13,6 +13,7 @@
 
 PaperPilot 是一款面向大学生的论文辅助平台，通过 AI 引导式阅读、苏格拉底提问、术语表全局高亮等功能，帮助新手从「搜不到 / 看不懂 / 记不住」走向「敢搜、敢读、敢问」，带来更好的论文阅读体验。
 
+<img width="3572" height="1994" alt="demo" src="https://github.com/user-attachments/assets/60daa30a-e97a-4afc-b321-6cfa82184406" />
 
 ---
 
