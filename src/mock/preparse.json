@@ -1,0 +1,52 @@
+{
+  "core_deconstruction": {
+      "motivation": "开源模型与闭源模型在复杂任务上的性能差距正在扩大。开源模型存在三个关键缺陷：1) 架构上对普通注意力机制的依赖导致长序列效率低下；2) 后训练阶段计算资源投入不足；3) 在AI智能体场景中，泛化能力和指令遵循能力明显落后于闭源模型。",
+      "method": "1. 引入DeepSeek稀疏注意力（DSA），显著降低计算复杂度，同时保持长上下文性能。2. 开发稳定、可扩展的强化学习（RL）协议，允许在后训练阶段进行大规模计算扩展（计算预算超过预训练成本的10%）。3. 提出一个新颖的流程，通过在工具使用场景中大规模合成任务数据（超过1800个不同环境和85000个复杂提示），将推理能力集成到智能体任务中。",
+      "result": "DeepSeek-V3.2在多个推理基准测试中与Kimi-k2-thinking和GPT-5性能相似。其智能体能力显著提升，在EvalSys等引入的长尾智能体任务上表现出色，成为高成本效益的替代方案。其高计算变体DeepSeek-V3.2-Speciale在推理能力上与Gemini-3.0-Pro持平，并在2025年国际数学奥林匹克（IMO）和国际信息学奥林匹克（IOI）中获得金牌表现。",
+      "gap": "论文指出，尽管开源社区在进步，但闭源专有模型的性能轨迹以更陡的速度加速，导致开源与闭源模型之间的性能差距似乎在扩大，而非收敛。"
+  },
+  "logical_anchors": [
+      {
+          "anchor_text": "Through our analysis, we identify three critical deficiencies that limit the capability of open-source models in complex tasks. First, architecturally, the predominant reliance on vanilla attention (Vaswani et al., 2017) mechanisms severely constrains efficiency for long sequences. This inefficiency poses a substantial obstacle to both scalable deployment and effective post-training. Second, regarding resource allocation, open-source models suffer from insufficient computational investment during the post-training phase, limiting their performance on hard tasks. Finally, in the context of AI agents, open-source models demonstrate a marked lag in generalization and instruction-following capabilities compared to their proprietary counterparts (EvalSys, 2025; Li et al., 2025; Luo et al., 2025), hindering their effectiveness in real deployment.",
+          "page_hint": 2,
+          "chacha_comment": "这里是论文的立论基石，清晰指出了开源模型的三大痛点。理解这三点，就抓住了全文要解决的核心矛盾。"
+      },
+      {
+          "anchor_text": "Given the index scores {𝐼𝑡,𝑠 } for each query token h𝑡 , our fine-grained token selection mechanism retrieves only the key-value entries {c𝑠 } corresponding to the top-k index scores. Then, the attention output u𝑡 is computed by applying the attention mechanism between the query token h𝑡 and the sparsely selected key-value entries {c𝑠 }: u𝑡 = Attn\u0000h𝑡 , \bc𝑠 𝐼𝑡,𝑠 ∈ Top-k\u0000𝐼𝑡,:\u0001 \u0001.",
+          "page_hint": 3,
+          "chacha_comment": "这是DSA（DeepSeek稀疏注意力）的核心操作逻辑。它揭示了如何从O(n²)降到O(nk)的关键一步：只关注最重要的top-k个token。"
+      },
+      {
+          "anchor_text": "As a direct result of this adjustment, the gradient of this KL estimator becomes unbiased, which eliminates systematic estimation errors, thereby facilitating stable convergence. This contrasts sharply with the original K3 estimator, particularly when the sampled tokens have substantially lower probabilities under the current policy than the reference policy, i.e., 𝜋𝜃 ≪ 𝜋ref. In such cases, the gradient of the K3 estimator assigns disproportionately large, unbounded weights to maximize the likelihood of these tokens, resulting in noisy gradient updates that accumulate to degrade sample quality in subsequent iterations and lead to unstable training dynamics.",
+          "page_hint": 7,
+          "chacha_comment": "这里深入到了强化学习稳定性的技术硬核。解释了为什么传统的K3估计器在策略差异大时会出问题，以及他们提出的无偏KL估计如何解决这个痛点。这是实现大规模RL扩展的关键技术细节。"
+      },
+      {
+          "anchor_text": "We observed that replicating DeepSeek-R1’s strategy—discarding reasoning content upon the arrival of the second round of messages—results in significant token inefficiency. This approach forces the model to redundantly re-reason through the entire problem for each subsequent tool call. To mitigate this, we developed a context management strictly tailored for tool-calling scenarios... Historical reasoning content is discarded only when a new user message is introduced to the conversation. If only tool-related messages (e.g., tool outputs) are appended, the reasoning content is retained throughout the interaction.",
+          "page_hint": 9,
+          "chacha_comment": "这是一个非常巧妙的工程洞察。它点出了在智能体场景中简单套用纯推理策略的弊端，并提出了针对性的上下文管理策略，是提升智能体效率的关键设计。"
+      }
+  ],
+  "knowledge_discovery": [
+      {
+          "term": "DeepSeek Sparse Attention (DSA)",
+          "definition": "一种高效的注意力机制，通过闪电索引器和细粒度token选择机制，将核心注意力复杂度从O(L²)降低到O(Lk)，其中k是选择的token数量（k << L）。旨在保持长上下文性能的同时显著减少计算成本。"
+      },
+      {
+          "term": "Group Relative Policy Optimization (GRPO)",
+          "definition": "DeepSeek-V3.2使用的强化学习算法。它在每组采样响应中，通过组内奖励归一化来计算优势估计，并结合KL散度惩罚来优化策略模型。"
+      },
+      {
+          "term": "Specialist Distillation",
+          "definition": "后训练中的一个步骤。首先为特定领域（如数学、编程）训练专门的模型，然后使用这些专家模型生成领域特定的数据，用于最终检查点的训练，以提升各领域性能。"
+      },
+      {
+          "term": "Lightning Indexer",
+          "definition": "DSA的一个组件。它计算查询token和前面token之间的索引分数，以决定哪些token被选择。其头数少，可用FP8实现，计算效率高。"
+      },
+      {
+          "term": "Off-Policy Sequence Masking",
+          "definition": "在GRPO训练中用于稳定训练的策略。它会掩码那些具有负优势且策略分歧（旧策略与当前策略的KL散度）超过阈值的序列，以防止有害的离策略样本破坏优化过程。"
+      }
+  ]
+}

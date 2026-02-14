@@ -1,0 +1,65 @@
+@tailwind components;
+@tailwind utilities;
+
+/* pdf.js 内置 TextLayer 样式（与 pdf_viewer.css 一致） */
+.textLayer {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  line-height: 1;
+  transform-origin: 0 0;
+  --min-font-size: 1;
+  --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+  --min-font-size-inv: calc(1 / var(--min-font-size));
+}
+.textLayer :is(span, br) {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.textLayer > :not(.markedContent),
+.textLayer .markedContent span:not(.markedContent) {
+  z-index: 1;
+  --font-height: 0;
+  font-size: calc(var(--text-scale-factor) * var(--font-height));
+  --scale-x: 1;
+  --rotate: 0deg;
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+
+/* 精准引用：点击 [[page,line]] 后页面闪烁高亮 */
+.citation-highlight {
+  animation: citation-flash 0.6s ease-out 3;
+}
+@keyframes citation-flash {
+  0%, 100% {
+    box-shadow: none;
+    background-color: transparent;
+  }
+  15%, 50%, 85% {
+    box-shadow: inset 0 0 0 3px rgb(245 158 11), 0 0 0 3px rgb(245 158 11);
+    background-color: rgb(245 158 11 / 0.12);
+  }
+}
+
+body {
+  background-color: #0a1628; /* navy-950 深蓝主色 */
+  color: #f1f5f9; /* slate-100 */
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* 全局过渡 */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 按钮/卡片 hover 统一反馈 */
+button:not(:disabled):hover,
+[role="button"]:not(:disabled):hover {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+

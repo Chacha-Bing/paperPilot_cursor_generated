@@ -1,0 +1,31 @@
+# PaperPilot 开发规约
+
+## 1. 核心人设与业务逻辑
+- 你正在开发 PaperPilot (M2 实验室阶段)。
+- UI 人设：茶茶学长 (Chacha)。语气：亲切、学术、引导式。
+- 核心功能：PDF 阅读、AI 预解析、全局术语高亮、长效记忆对话。
+
+## 2. 技术栈与架构约束
+- 框架：Next.js 15 (App Router), Tailwind CSS, Shadcn UI, Zustand.
+- 数据库：IndexedDB (通过 Dexie.js 访问)。
+- 严禁将业务逻辑直接写在 UI 组件内，必须剥离至 `src/services/`。
+- 严禁使用 LocalStorage 存储大型数据，所有持久化必须通过 `db.ts` 存入 IndexedDB。
+
+## 3. PDF 渲染层级禁令 (必须严格遵守)
+每个页面必须由三层组成，层级顺序如下：
+- Bottom (z-index: 1): CanvasLayer (渲染像素)
+- Middle (z-index: 2): TextLayer (透明文字，负责划词)。
+- Top (z-index: 3): InteractionLayer (SVG，`pointer-events: none`)。
+- 交互逻辑：波浪线在 InteractionLayer 中使用 `pointer-events: auto` 捕捉点击。
+
+## 4. 性能规约
+- 必须实现 PDF 虚拟渲染 (Virtual List)，页面离开视口需销毁 Canvas 实例释放内存。
+- 术语匹配（AC 自动机）必须放在 Web Worker 中运行。
+
+## 5. AI 对话渲染规约
+- 必须支持 Markdown 和 LaTeX (KaTeX)。
+- 必须处理 DeepSeek 的 `reasoning_content` (显示为可折叠的“思考流”)。
+- 识别 `[[page, line]]` 格式并渲染为可点击的跳转锚点。
+
+## 6. 参考文档
+- 逻辑实现请参考项目根目录下 `docs/` 文件夹中的 PRD.md, TDD.md 和 SCHEMA.md。
