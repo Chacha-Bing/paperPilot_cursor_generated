@@ -156,6 +156,9 @@ async function main() {
   const diff = getStagedDiff();
   const files = getStagedFiles();
 
+  console.log("测试diff", diff);
+  console.log("测试files", files);
+
   if (!diff.trim() || files.length === 0) {
     console.log("\n\u001b[33m无 staged 变更，跳过 Code Review\u001b[0m\n");
     process.exit(0);
