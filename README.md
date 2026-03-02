@@ -1,7 +1,5 @@
 # PaperPilot · 论文导航者
-
-> 个人vibe coding项目
-> 
+ 
 > 需求文档见 /docs/PRD.md，技术文档见 /docs/TDD.md
 > 
 > 由于文档经由AI从PDF转md，所以格式可能不清晰，可以参考源文件：
